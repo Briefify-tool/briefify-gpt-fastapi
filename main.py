@@ -27,7 +27,7 @@ async def generate_summary(video_id):
     for i in raw_transcript:
         transcript = transcript + i["text"]
 
-    text_splitter = TokenTextSplitter(chunk_size=1000, chunk_overlap=0)
+    text_splitter = TokenTextSplitter(chunk_size=500, chunk_overlap=50)
     chunks = text_splitter.split_text(transcript)
 
     docs = [Document(page_content=t) for t in chunks]
@@ -37,4 +37,4 @@ async def generate_summary(video_id):
     chain = load_summarize_chain(llm, chain_type="map_reduce")
     summary = chain.run(docs)
 
-    return {"summary": summary}
+    return {"summary": summary, "summary_length": summary.count(" "), "transcript": transcript, "transcript_length":len(transcript.split())}
